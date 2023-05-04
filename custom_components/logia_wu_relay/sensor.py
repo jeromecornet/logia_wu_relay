@@ -118,10 +118,9 @@ class LogiaRelaySensor(SensorEntity):
     def __init__(self, device_name, url, base, sensor_info):
         name = device_name or "Logia"
         self._url = url
-        self._attr_name = name        
+        self._attr_name = name + " " + base + " " + sensor_info['attr_name']
         self._recorded_value = None
-        self._last_reset = None
-        self._unique_id = url+base+sensor_info['attr_key']
+        self._unique_id = url+"-"+base+"-"+sensor_info['attr_key']
         self._sensor_info = sensor_info
         self._device_info = DeviceInfo(
             identifiers={(DOMAIN, url+base)},
@@ -155,15 +154,12 @@ class LogiaRelaySensor(SensorEntity):
     def native_value(self):
         return self._recorded_value
 
-    @property
-    def last_reset(self):        
-        return self._last_reset        
-
     def update(self):
-        response = requests.get(self._url)
-        data = response.json()
-        self._recorded_value = measureOrNone(data, self._sensor_info['attr_key'])
-        if self._recorded_value is not None:
-            dt = datetime.now()
-            self._last_reset = datetime(dt.year, dt.month, dt.day)
-                                
+        try:
+            response = requests.get(self._url)            
+            data = response.json()
+            self._recorded_value = measureOrNone(data, self._sensor_info['attr_key'])
+        except:
+            self._recorded_value = None
+
+                                    
