@@ -144,17 +144,17 @@ class LogiaWindSensor(Entity):
         return DOMAIN + self._unique_id
 
     @property
-    def native_unit_of_measurement(self):
+    def unit_of_measurement(self):
         return '˚'
     
     @property
-    def native_value(self):
+    def value(self):
         return self._recorded_value
 
     @property
     def icon(self):
         """Icon to use in the frontend."""
-        return 'mdi:windsock'
+        return 'mdi:weather-windy'
 
     def update(self):
         try:
