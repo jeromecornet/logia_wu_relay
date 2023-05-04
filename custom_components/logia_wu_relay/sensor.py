@@ -32,7 +32,7 @@ LOGIA_BASE_SENSORS =  [{
   
       { 
         "attr_name": 'Relative Humidity',
-        "attr_key": 'indoortempf',
+        "attr_key": 'indoorhumidity',
         "sensor_type": SensorDeviceClass.HUMIDITY,
         "unit": '%',
     }]
