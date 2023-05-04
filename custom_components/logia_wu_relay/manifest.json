@@ -1,0 +1,9 @@
+{
+  "domain": "logia_wu_relay",
+  "name": "logia_wu_relay",
+  "version": "0.0.1",
+  "documentation": "https://github.com/jeromecornet/logia_wu_relay",
+  "dependencies": [],
+  "codeowners": ["jeromecornet"],
+  "requirements": []
+}

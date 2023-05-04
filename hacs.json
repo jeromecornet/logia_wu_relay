@@ -1,0 +1,6 @@
+{
+  "name": "logia_wu_relay",
+  "country": "US",
+  "render_readme": true,
+  "domains": ["sensor"]
+}
