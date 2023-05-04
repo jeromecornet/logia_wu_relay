@@ -115,7 +115,7 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
 
     add_devices([LogiaWindSensor(device_name, url, "Outdoor", sensor_info)])
 
-class LogiaWindSensor(Entity):
+class LogiaWindSensor(SensorEntity):
     def __init__(self, device_name, url, base, sensor_info):
         name = device_name or "Logia"
         self._url = url
@@ -144,11 +144,11 @@ class LogiaWindSensor(Entity):
         return DOMAIN + self._unique_id
 
     @property
-    def unit_of_measurement(self):
+    def native_unit_of_measurement(self):
         return '˚'
     
     @property
-    def value(self):
+    def native_value(self):
         return self._recorded_value
 
     @property
