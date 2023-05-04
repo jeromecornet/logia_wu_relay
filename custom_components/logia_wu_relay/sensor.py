@@ -151,6 +151,11 @@ class LogiaWindSensor(Entity):
     def native_value(self):
         return self._recorded_value
 
+    @property
+    def icon(self):
+        """Icon to use in the frontend."""
+        return 'mdi:windsock'
+
     def update(self):
         try:
             response = requests.get(self._url)            
