@@ -129,7 +129,7 @@ class LogiaRelaySensor(SensorEntity):
 
     @property
     def device_class(self):
-        return self._device_info['sensor_type']
+        return self._sensor_info['sensor_type']
 
     @property
     def device_info(self) -> DeviceInfo:
