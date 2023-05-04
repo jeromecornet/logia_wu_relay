@@ -129,6 +129,11 @@ class LogiaWindSensor(SensorEntity):
             manufacturer="Logia"
         )
 
+
+    @property
+    def device_class(self):
+        return None
+    
     @property
     def device_info(self) -> DeviceInfo:
         """Return the device info."""
