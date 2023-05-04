@@ -5,7 +5,7 @@ import voluptuous as vol
 from homeassistant.components.sensor import  PLATFORM_SCHEMA, SensorEntity, SensorDeviceClass
 from homeassistant.const import CONF_NAME
 import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.helpers.entity import DeviceInfo, Entity
 from . import DOMAIN
 from datetime import datetime
 
@@ -75,12 +75,12 @@ LOGIA_51_SENSORS = [
         "sensor_type": SensorDeviceClass.WIND_SPEED,
         "unit": 'mph',
     },
-     { 
-        "attr_name": 'Wind Direction',
-        "attr_key": 'winddir',
-        "sensor_type": SensorDeviceClass.WIND_SPEED,
-        "unit": '˚',
-    },
+    #  { 
+    #     "attr_name": 'Wind Direction',
+    #     "attr_key": 'winddir',
+    #     "sensor_type": SensorDeviceClass.WIND_DIRECTION,
+    #     "unit": '˚',
+    # },
      { 
         "attr_name": 'Rain rate',
         "attr_key": 'rainin',
@@ -113,6 +113,53 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
     for sensor_info in LOGIA_BASE_SENSORS:
         add_devices([LogiaRelaySensor(device_name, url, "Indoor", sensor_info)])
 
+    add_devices([LogiaWindSensor(device_name, url, "Outdoor", sensor_info)])
+
+class LogiaWindSensor(Entity):
+    def __init__(self, device_name, url, base, sensor_info):
+        name = device_name or "Logia"
+        self._url = url
+        self._attr_name = name + " " + base + " Wind Direction"
+        self._recorded_value = None
+        self._unique_id = url+"-"+base+"-winddir"
+        self._sensor_info = sensor_info
+        self._device_info = DeviceInfo(
+            identifiers={(DOMAIN, url+base)},
+            name_by_user=name + base,
+            manufacturer="Logia"
+        )
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return the device info."""
+        return  self._device_info
+
+    @property
+    def name(self):
+        """Return the name of the sensor."""
+        return self._attr_name
+    
+    @property
+    def unique_id(self):
+        return DOMAIN + self._unique_id
+
+    @property
+    def native_unit_of_measurement(self):
+        return '˚'
+    
+    @property
+    def native_value(self):
+        return self._recorded_value
+
+    def update(self):
+        try:
+            response = requests.get(self._url)            
+            data = response.json()
+            self._recorded_value = measureOrNone(data, "winddir")
+        except:
+            self._recorded_value = None
+
+                                    
 
 class LogiaRelaySensor(SensorEntity):
     def __init__(self, device_name, url, base, sensor_info):
