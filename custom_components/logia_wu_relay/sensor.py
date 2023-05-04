@@ -121,6 +121,8 @@ class LogiaRelaySensor(SensorEntity):
         self._attr_name = name        
         self._unique_id = url+base+sensor_info['attr_key']
         self._sensor_info = sensor_info
+        self._value = None
+        self._last_reset = None
         self._device_info = DeviceInfo(
             identifiers={(DOMAIN, url+base)},
             name_by_user=name + base,
@@ -143,7 +145,7 @@ class LogiaRelaySensor(SensorEntity):
     
     @property
     def unique_id(self):
-        DOMAIN + self._unique_id
+        return DOMAIN + self._unique_id
 
     @property
     def native_unit_of_measurement(self):
