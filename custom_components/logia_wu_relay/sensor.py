@@ -115,6 +115,9 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
         add_devices([LogiaRelaySensor(device_name, url, "Indoor", sensor_info)])
 
     add_devices([LogiaWindSensor(device_name, url, "Outdoor", sensor_info)])
+    add_devices([LogiaFeelsLikeSensor(device_name, url, "Outdoor", sensor_info)])
+    add_devices([LogiaHumixexSensor(device_name, url, "Outdoor", sensor_info)])
+    add_devices([LogiaWindChillSensor(device_name, url, "Outdoor", sensor_info)])        
 
 class LogiaWindSensor(SensorEntity):
     def __init__(self, device_name, url, base, sensor_info):
@@ -227,7 +230,6 @@ class LogiaHumixexSensor(SensorEntity):
         except:
             self._recorded_value = None
          
- 
 class LogiaWindChillSensor(SensorEntity):
     def __init__(self, device_name, url, base, sensor_info):
         name = device_name or "Logia"
