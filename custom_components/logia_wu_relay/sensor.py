@@ -231,7 +231,7 @@ class LogiaHumixexSensor(SensorEntity):
             tempc = (float(tempfs) - 32.0)/1.8
             dewc = (float(dewfs) - 32.0)/1.8
             # Environment Canada Humidex formula
-            self._recorded_value = tempc + 0.555*(6.11*math.exp(5417.7530*(1.0/273.16 - 1.0/(273.15+dewc)))-10)
+            self._recorded_value = round(tempc + 0.555*(6.11*math.exp(5417.7530*(1.0/273.16 - 1.0/(273.15+dewc)))-10),1)
          
 class LogiaWindChillSensor(SensorEntity):
     def __init__(self, device_name, url, base, sensor_info):
@@ -291,11 +291,11 @@ class LogiaWindChillSensor(SensorEntity):
             if tempf > 50:
                 self._recorded_value =  None
             elif vm is None or vm < 3:
-                self._recorded_value =  (tempf - 32.0)/1.8      
+                self._recorded_value =  round((tempf - 32.0)/1.8,1)
             else:
                 # Environment Wind Chill formula in F
                 wcf = 35.74 + 0.6215 * tempf - 35.75*math.pow(vm, 0.16) + 0.4275*tempf*math.pow(vm, 0.16)
-                self._recorded_value = (wcf - 32.0)/1.8      
+                self._recorded_value = round((wcf - 32.0)/1.8,1)
 
  
 class LogiaFeelsLikeSensor(SensorEntity):
@@ -359,13 +359,13 @@ class LogiaFeelsLikeSensor(SensorEntity):
                 tempc = (tempf - 32.0)/1.8
                 dewc = (dewf - 32.0)/1.8
                 # Environment Canada Humidex formula
-                self._recorded_value = tempc + 0.555*(6.11*math.exp(5417.7530*(1.0/273.16 - 1.0/(273.15+dewc)))-10)
+                self._recorded_value = round(tempc + 0.555*(6.11*math.exp(5417.7530*(1.0/273.16 - 1.0/(273.15+dewc)))-10),1)
             elif tempf < 50 and vm > 3:                
                 # Environment Wind Chill formula in F
                 wc = 35.74 + 0.6215 * tempf - 35.75*math.pow(vm, 0.16) + 0.4275*tempf*math.pow(vm, 0.16)
-                self._recorded_value = (wc - 32.0)/1.8
+                self._recorded_value = round((wc - 32.0)/1.8,1)
             else:
-                self._recorded_value = (tempf - 32.0)/1.8                
+                self._recorded_value = round((tempf - 32.0)/1.8,1)
                                                 
 
 class LogiaRelaySensor(SensorEntity):
