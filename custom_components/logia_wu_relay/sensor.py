@@ -1,4 +1,5 @@
 import logging
+import math
 
 import voluptuous as vol
 
@@ -169,7 +170,187 @@ class LogiaWindSensor(SensorEntity):
         except:
             self._recorded_value = None
 
-                                    
+class LogiaHumixexSensor(SensorEntity):
+    def __init__(self, device_name, url, base, sensor_info):
+        name = device_name or "Logia"
+        self._url = url
+        self._attr_name = name + " " + base + " Humidex"
+        self._recorded_value = None
+        self._unique_id = url+"-"+base+"-humidex"
+        self._sensor_info = sensor_info
+        self._device_info = DeviceInfo(
+            identifiers={(DOMAIN, url+base)},
+            name_by_user=name + base,
+            manufacturer="Logia"
+        )
+
+
+    @property
+    def device_class(self):
+        return SensorDeviceClass.TEMPERATURE,
+    
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return the device info."""
+        return  self._device_info
+
+    @property
+    def name(self):
+        """Return the name of the sensor."""
+        return self._attr_name
+    
+    @property
+    def unique_id(self):
+        return DOMAIN + self._unique_id
+
+    @property
+    def native_unit_of_measurement(self):
+        return '˚C'
+    
+    @property
+    def native_value(self):
+        return self._recorded_value
+
+    def update(self):
+        try:
+            response = requests.get(self._url)            
+            data = response.json()
+            tempf = measureOrNone(data, "tempf")
+            dewf = measureOrNone(data, "dewptf")
+            if tempf is None or dewf is None:
+                self._recorded_value = None
+            else:
+                tempc = (tempf - 32)/1.8
+                dewc = (dewf - 32)/1.8
+                # Environment Canada Humidex formula
+                self._recorded_value = tempc + 0.555*(6.11*math.exp(5417.7530*(1.0/273.16 - 1.0/(273.15+dewc)))-10)
+        except:
+            self._recorded_value = None
+         
+ 
+class LogiaWindChillSensor(SensorEntity):
+    def __init__(self, device_name, url, base, sensor_info):
+        name = device_name or "Logia"
+        self._url = url
+        self._attr_name = name + " " + base + " Wind Chill"
+        self._recorded_value = None
+        self._unique_id = url+"-"+base+"-windchill"
+        self._sensor_info = sensor_info
+        self._device_info = DeviceInfo(
+            identifiers={(DOMAIN, url+base)},
+            name_by_user=name + base,
+            manufacturer="Logia"
+        )
+
+
+    @property
+    def device_class(self):
+        return SensorDeviceClass.TEMPERATURE,
+    
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return the device info."""
+        return  self._device_info
+
+    @property
+    def name(self):
+        """Return the name of the sensor."""
+        return self._attr_name
+    
+    @property
+    def unique_id(self):
+        return DOMAIN + self._unique_id
+
+    @property
+    def native_unit_of_measurement(self):
+        return '˚F'
+    
+    @property
+    def native_value(self):
+        return self._recorded_value
+
+    def update(self):
+        try:
+            response = requests.get(self._url)            
+            data = response.json()
+            tempf = measureOrNone(data, "tempf")
+            vm = measureOrNone(data, "windgustmph")
+            if tempf is None or tempf > 50:
+                self._recorded_value = None
+            elif vm is None or vm < 3:
+                self._recorded_value = None
+            else:
+                # Environment Wind Chill formula in F
+                self._recorded_value = 35.74 + 0.6215 * tempf - 35.75*math.pow(vm, 0.16) + 0.4275*tempf*math.pow(vm, 0.16)
+        except:
+            self._recorded_value = None
+
+ 
+class LogiaFeelsLikeSensor(SensorEntity):
+    def __init__(self, device_name, url, base, sensor_info):
+        name = device_name or "Logia"
+        self._url = url
+        self._attr_name = name + " " + base + " Feels Like"
+        self._recorded_value = None
+        self._unique_id = url+"-"+base+"-feelslike"
+        self._sensor_info = sensor_info
+        self._device_info = DeviceInfo(
+            identifiers={(DOMAIN, url+base)},
+            name_by_user=name + base,
+            manufacturer="Logia"
+        )
+
+
+    @property
+    def device_class(self):
+        return SensorDeviceClass.TEMPERATURE,
+    
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return the device info."""
+        return  self._device_info
+
+    @property
+    def name(self):
+        """Return the name of the sensor."""
+        return self._attr_name
+    
+    @property
+    def unique_id(self):
+        return DOMAIN + self._unique_id
+
+    @property
+    def native_unit_of_measurement(self):
+        return '˚C'
+    
+    @property
+    def native_value(self):
+        return self._recorded_value
+
+    def update(self):
+        try:
+            response = requests.get(self._url)            
+            data = response.json()
+            vm = measureOrNone(data, "windgustmph")            
+            tempf = measureOrNone(data, "tempf")
+            dewf = measureOrNone(data, "dewptf")
+            if tempf is None:
+                self._recorded_value = None
+            elif tempf > 60 and dewf is not None:
+                tempc = (tempf - 32)/1.8
+                dewc = (dewf - 32)/1.8
+                # Environment Canada Humidex formula
+                self._recorded_value = tempc + 0.555*(6.11*math.exp(5417.7530*(1.0/273.16 - 1.0/(273.15+dewc)))-10)
+            elif tempf < 50 and vm > 3:                
+                # Environment Wind Chill formula in F
+                wc = 35.74 + 0.6215 * tempf - 35.75*math.pow(vm, 0.16) + 0.4275*tempf*math.pow(vm, 0.16)
+                self._recorded_value = (wc - 32)/1.8
+            else:
+                self._recorded_value = (tempf - 32)/1.8
+                
+        except:
+            self._recorded_value = None
+                                                
 
 class LogiaRelaySensor(SensorEntity):
     def __init__(self, device_name, url, base, sensor_info):
