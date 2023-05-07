@@ -190,7 +190,7 @@ class LogiaHumixexSensor(SensorEntity):
 
     @property
     def device_class(self):
-        return SensorDeviceClass.TEMPERATURE,
+        return SensorDeviceClass.TEMPERATURE
     
     @property
     def device_info(self) -> DeviceInfo:
@@ -250,7 +250,7 @@ class LogiaWindChillSensor(SensorEntity):
 
     @property
     def device_class(self):
-        return SensorDeviceClass.TEMPERATURE,
+        return SensorDeviceClass.TEMPERATURE
     
     @property
     def device_info(self) -> DeviceInfo:
@@ -315,7 +315,7 @@ class LogiaFeelsLikeSensor(SensorEntity):
 
     @property
     def device_class(self):
-        return SensorDeviceClass.TEMPERATURE,
+        return SensorDeviceClass.TEMPERATURE
     
     @property
     def device_info(self) -> DeviceInfo:
