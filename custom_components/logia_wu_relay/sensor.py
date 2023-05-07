@@ -225,8 +225,8 @@ class LogiaHumixexSensor(SensorEntity):
         dewfs = measureOrNone(data, "dewptf")
         if tempfs is None or dewfs is None:
             self._recorded_value = None
-        elif tempfs < 70:
-            self._recorded_value = tempc
+        elif float(tempfs) < 70:
+            self._recorded_value = (float(tempfs) - 32.0)/1.8
         else:
             tempc = (float(tempfs) - 32.0)/1.8
             dewc = (float(dewfs) - 32.0)/1.8
