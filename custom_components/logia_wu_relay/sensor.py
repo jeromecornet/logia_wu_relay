@@ -266,7 +266,7 @@ class LogiaWindChillSensor(SensorEntity):
 
     @property
     def native_unit_of_measurement(self):
-        return '˚F'
+        return '˚C'
     
     @property
     def suggested_display_precision(self):
@@ -287,12 +287,13 @@ class LogiaWindChillSensor(SensorEntity):
             tempf = float(tempfs)
             vm = float(vms)
             if tempf > 50:
-                self._recorded_value = tempf
+                self._recorded_value =  (tempf - 32)/1.8      
             elif vm is None or vm < 3:
-                self._recorded_value = tempf
+                self._recorded_value =  (tempf - 32)/1.8      
             else:
                 # Environment Wind Chill formula in F
-                self._recorded_value = 35.74 + 0.6215 * tempf - 35.75*math.pow(vm, 0.16) + 0.4275*tempf*math.pow(vm, 0.16)
+                wcf = 35.74 + 0.6215 * tempf - 35.75*math.pow(vm, 0.16) + 0.4275*tempf*math.pow(vm, 0.16)
+                self._recorded_value = (wcf - 32)/1.8      
 
  
 class LogiaFeelsLikeSensor(SensorEntity):
