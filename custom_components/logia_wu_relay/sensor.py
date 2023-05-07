@@ -211,6 +211,10 @@ class LogiaHumixexSensor(SensorEntity):
         return '˚C'
     
     @property
+    def suggested_display_precision(self):
+        return 1
+
+    @property
     def native_value(self):
         return self._recorded_value
 
@@ -264,6 +268,10 @@ class LogiaWindChillSensor(SensorEntity):
     def native_unit_of_measurement(self):
         return '˚F'
     
+    @property
+    def suggested_display_precision(self):
+        return 1
+
     @property
     def native_value(self):
         return self._recorded_value
@@ -324,6 +332,10 @@ class LogiaFeelsLikeSensor(SensorEntity):
     def native_unit_of_measurement(self):
         return '˚C'
     
+    @property
+    def suggested_display_precision(self):
+        return 1
+
     @property
     def native_value(self):
         return self._recorded_value
@@ -388,6 +400,10 @@ class LogiaRelaySensor(SensorEntity):
     @property
     def native_unit_of_measurement(self):
         return self._sensor_info['unit']
+
+    @property
+    def suggested_display_precision(self):
+        return 1
     
     @property
     def native_value(self):
