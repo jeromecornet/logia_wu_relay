@@ -226,7 +226,7 @@ class LogiaHumixexSensor(SensorEntity):
         if tempfs is None or dewfs is None:
             self._recorded_value = None
         elif float(tempfs) < 70:
-            self._recorded_value = (float(tempfs) - 32.0)/1.8
+            self._recorded_value = None
         else:
             tempc = (float(tempfs) - 32.0)/1.8
             dewc = (float(dewfs) - 32.0)/1.8
@@ -289,7 +289,7 @@ class LogiaWindChillSensor(SensorEntity):
             tempf = float(tempfs)
             vm = float(vms)
             if tempf > 50:
-                self._recorded_value =  (tempf - 32.0)/1.8      
+                self._recorded_value =  None
             elif vm is None or vm < 3:
                 self._recorded_value =  (tempf - 32.0)/1.8      
             else:
