@@ -217,13 +217,13 @@ class LogiaHumixexSensor(SensorEntity):
     def update(self):
         response = requests.get(self._url)            
         data = response.json()
-        tempf = measureOrNone(data, "tempf")
-        dewf = measureOrNone(data, "dewptf")
-        if tempf is None or dewf is None:
+        tempfs = measureOrNone(data, "tempf")
+        dewfs = measureOrNone(data, "dewptf")
+        if tempfs is None or dewfs is None:
             self._recorded_value = None
         else:
-            tempc = (float(tempf) - 32)/1.8
-            dewc = (float(dewf) - 32)/1.8
+            tempc = (float(tempfs) - 32)/1.8
+            dewc = (float(dewfs) - 32)/1.8
             # Environment Canada Humidex formula
             self._recorded_value = tempc + 0.555*(6.11*math.exp(5417.7530*(1.0/273.16 - 1.0/(273.15+dewc)))-10)
          
@@ -271,13 +271,13 @@ class LogiaWindChillSensor(SensorEntity):
     def update(self):
         response = requests.get(self._url)            
         data = response.json()
-        tempf = measureOrNone(data, "tempf")
-        vm = measureOrNone(data, "windgustmph")
-        if tempf is None or vm is None:
+        tempfs = measureOrNone(data, "tempf")
+        vms = measureOrNone(data, "windgustmph")
+        if tempfs is None or vms is None:
             self._recorded_value = None
         else:
-            tempf = float(tempf)
-            vm = float(vm)
+            tempf = float(tempfs)
+            vm = float(vms)
             if tempf > 50:
                 self._recorded_value = tempf
             elif vm is None or vm < 3:
@@ -331,15 +331,15 @@ class LogiaFeelsLikeSensor(SensorEntity):
     def update(self):
         response = requests.get(self._url)            
         data = response.json()
-        vm = measureOrNone(data, "windgustmph")            
-        tempf = measureOrNone(data, "tempf")
-        dewf = measureOrNone(data, "dewptf")
-        if tempf is None or vm is None or dewf is None:
+        vms = measureOrNone(data, "windgustmph")            
+        tempfs = measureOrNone(data, "tempf")
+        dewfs = measureOrNone(data, "dewptf")
+        if tempfs is None or vms is None or dewfs is None:
             self._recorded_value = None
         else:
-            tempf = float(tempf)
-            dewf = float(dewf)
-            vm = float(vm)
+            tempf = float(tempfs)
+            dewf = float(dewfs)
+            vm = float(vms)
             if tempf > 60 and dewf is not None:
                 tempc = (tempf - 32)/1.8
                 dewc = (dewf - 32)/1.8
