@@ -225,6 +225,8 @@ class LogiaHumixexSensor(SensorEntity):
         dewfs = measureOrNone(data, "dewptf")
         if tempfs is None or dewfs is None:
             self._recorded_value = None
+        elif tempfs < 70:
+            self._recorded_value = tempc
         else:
             tempc = (float(tempfs) - 32)/1.8
             dewc = (float(dewfs) - 32)/1.8
@@ -353,7 +355,7 @@ class LogiaFeelsLikeSensor(SensorEntity):
             tempf = float(tempfs)
             dewf = float(dewfs)
             vm = float(vms)
-            if tempf > 60 and dewf is not None:
+            if tempf > 70 and dewf is not None:
                 tempc = (tempf - 32)/1.8
                 dewc = (dewf - 32)/1.8
                 # Environment Canada Humidex formula
