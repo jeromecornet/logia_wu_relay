@@ -38,7 +38,7 @@ LOGIA_BASE_SENSORS =  [{
         "unit": '%',
     }]
 
-LOGIA_51_SENSORS = [
+LOGIA_51_SENSORS = [ 
    
     { 
         "attr_name": 'Atmospheric pressure',
@@ -83,10 +83,10 @@ LOGIA_51_SENSORS = [
     #     "unit": '˚',
     # },
      { 
-        "attr_name": 'Rain rate',
+        "attr_name": 'Hourly Rain',
         "attr_key": 'rainin',
-        "sensor_type": SensorDeviceClass.PRECIPITATION_INTENSITY,
-        "unit": 'in/h',
+        "sensor_type": SensorDeviceClass.PRECIPITATION,
+        "unit": 'in',        
     },
     { 
         "attr_name": 'Daily Rain',
@@ -412,11 +412,19 @@ class LogiaRelaySensor(SensorEntity):
     def native_value(self):
         return self._recorded_value
 
+    @property
+    def state_class(self):
+        if self._sensor_info['sensor_type'] == SensorDeviceClass.PRECIPITATION:
+            return "total_increasing"
+        else:
+            return "measurement"
+
+
     def update(self):
         try:
             response = requests.get(self._url)            
             data = response.json()
-            self._recorded_value = measureOrNone(data, self._sensor_info['attr_key'])
+            self._recorded_value = measureOrNone(data, self._sensor_info['attr_key'])            
         except:
             self._recorded_value = None
 
