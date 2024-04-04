@@ -4,7 +4,7 @@ import math
 import voluptuous as vol
 
 from homeassistant.components.sensor import  PLATFORM_SCHEMA, SensorEntity, SensorDeviceClass
-from homeassistant.const import CONF_NAME, TEMP_CELSIUS
+from homeassistant.const import CONF_NAME, UnitOfTemperature
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity import DeviceInfo, Entity
 from . import DOMAIN
@@ -208,7 +208,7 @@ class LogiaHumixexSensor(SensorEntity):
 
     @property
     def native_unit_of_measurement(self):
-        return TEMP_CELSIUS
+        return UnitOfTemperature.CELSIUS
     
     @property
     def suggested_display_precision(self):
@@ -268,7 +268,7 @@ class LogiaWindChillSensor(SensorEntity):
 
     @property
     def native_unit_of_measurement(self):
-        return TEMP_CELSIUS
+        return UnitOfTemperature.CELSIUS
     
     @property
     def suggested_display_precision(self):
@@ -333,7 +333,7 @@ class LogiaFeelsLikeSensor(SensorEntity):
 
     @property
     def native_unit_of_measurement(self):
-        return TEMP_CELSIUS
+        return UnitOfTemperature.CELSIUS
     
     @property
     def suggested_display_precision(self):
