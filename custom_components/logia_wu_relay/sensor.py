@@ -219,8 +219,14 @@ class LogiaHumixexSensor(SensorEntity):
         return self._recorded_value
 
     def update(self):
-        response = requests.get(self._url)            
-        data = response.json()
+        data = None
+        try:
+            response = requests.get(self._url)            
+            data = response.json()
+        except:
+            self._recorded_value = None
+            return
+        
         tempfs = measureOrNone(data, "tempf")
         dewfs = measureOrNone(data, "dewptf")
         if tempfs is None or dewfs is None:
@@ -279,8 +285,14 @@ class LogiaWindChillSensor(SensorEntity):
         return self._recorded_value
 
     def update(self):
-        response = requests.get(self._url)            
-        data = response.json()
+        data = None
+        try:
+            response = requests.get(self._url)            
+            data = response.json()
+        except:
+            self._recorded_value = None
+            return
+        
         tempfs = measureOrNone(data, "tempf")
         vms = measureOrNone(data, "windgustmph")
         if tempfs is None or vms is None:
@@ -344,8 +356,14 @@ class LogiaFeelsLikeSensor(SensorEntity):
         return self._recorded_value
 
     def update(self):
-        response = requests.get(self._url)            
-        data = response.json()
+        data = None
+        try:
+            response = requests.get(self._url)
+            data = response.json()
+        except:
+            self._recorded_value = None
+            return
+            
         vms = measureOrNone(data, "windgustmph")            
         tempfs = measureOrNone(data, "tempf")
         dewfs = measureOrNone(data, "dewptf")
