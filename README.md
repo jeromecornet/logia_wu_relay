@@ -36,6 +36,21 @@ directory, or add this repository as a custom repository in HACS.
 
 ## Configuration
 
+### Through the UI (recommended)
+
+**Settings → Devices & Services → Add integration → Logia Weather Underground
+relay**, then enter:
+
+| Field          | Required | Description                                  |
+| -------------- | -------- | -------------------------------------------- |
+| `Payload URL`  | yes      | URL of the JSON payload written by the relay  |
+| `Device name`  | no       | Prefix for the entity names (default `Logia`) |
+
+The URL is fetched once during setup, so the relay must be reachable when you
+add it.
+
+### Through YAML (legacy, migrated automatically)
+
 ```yaml
 sensor:
   - platform: logia_wu_relay
@@ -43,10 +58,9 @@ sensor:
     url: "http://<web-server>/weatherstation/history/weather.json"
 ```
 
-| Key    | Required | Description                                        |
-| ------ | -------- | -------------------------------------------------- |
-| `url`  | yes      | URL of the JSON payload written by the relay       |
-| `name` | no       | Device name prefix (defaults to `Logia`)           |
+This is imported into a config entry on the first start: entities and history are
+kept (unique IDs are unchanged), and the block then does nothing but log a
+warning on every start — remove it once the entry exists.
 
 ## Entities
 
@@ -60,6 +74,9 @@ keep showing a stale value.
 
 ## Notes
 
+- Set up as a config entry (UI or YAML import), so the weather station device is
+  attached to an integration entry instead of floating free — required since
+  Home Assistant deprecated device-less YAML platforms.
 - All entities share a single HTTP request per poll cycle (5 s cache) instead of
   fetching the payload once per entity.
 - Network errors, truncated payloads and missing keys degrade to `unknown`
