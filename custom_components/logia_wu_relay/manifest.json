@@ -1,9 +1,12 @@
 {
-  "domain": "logia_wu_relay",
-  "name": "logia_wu_relay",
-  "version": "0.0.1",
-  "documentation": "https://github.com/jeromecornet/logia_wu_relay",
-  "dependencies": [],
-  "codeowners": ["jeromecornet"],
-  "requirements": []
+    "domain": "logia_wu_relay",
+    "name": "Logia Weather Underground relay",
+    "codeowners": ["@jeromecornet"],
+    "documentation": "https://github.com/jeromecornet/logia_wu_relay",
+    "issue_tracker": "https://github.com/jeromecornet/logia_wu_relay/issues",
+    "integration_type": "hub",
+    "iot_class": "local_polling",
+    "dependencies": [],
+    "requirements": [],
+    "version": "0.1.0"
 }
