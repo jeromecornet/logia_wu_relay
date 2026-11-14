@@ -20,7 +20,8 @@ from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
 )
-from homeassistant.const import CONF_NAME, UnitOfTemperature
+from homeassistant.config_entries import SOURCE_IMPORT
+from homeassistant.const import UnitOfTemperature
 from homeassistant.helpers import config_validation as cv
 
 try:  # Home Assistant >= 2023.8
@@ -28,11 +29,9 @@ try:  # Home Assistant >= 2023.8
 except ImportError:  # pragma: no cover - older Home Assistant
     from homeassistant.helpers.entity import DeviceInfo
 
-from . import DOMAIN
+from .const import CONF_NAME, CONF_URL, DEFAULT_NAME, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
-
-CONF_URL = "url"
 
 #: Readings older than this are reported as unknown instead of stale values.
 STALE_TIMEOUT_MINUTES = 15
@@ -306,11 +305,8 @@ def _wind_chill(tempf: float, windmph: float) -> float:
     return 35.74 + 0.6215 * tempf - 35.75 * wind_factor + 0.4275 * tempf * wind_factor
 
 
-def setup_platform(hass, config, add_entities, discovery_info=None) -> None:
-    """Set up the Logia relay sensors."""
-    device_name = config.get(CONF_NAME) or "Logia"
-    url = config[CONF_URL]
-
+def build_entities(device_name: str, url: str) -> list[LogiaSensorBase]:
+    """Create every entity published by a single relay."""
     entities = [
         LogiaRelaySensor(device_name, url, "Outdoor", sensor_info)
         for sensor_info in LOGIA_51_SENSORS
@@ -327,5 +323,38 @@ def setup_platform(hass, config, add_entities, discovery_info=None) -> None:
             LogiaWindChillSensor(device_name, url, "Outdoor"),
         ]
     )
+    return entities
 
-    add_entities(entities)
+
+async def async_setup_entry(hass, entry, async_add_entities) -> None:
+    """Set up the sensors of a config entry."""
+    device_name = entry.data.get(CONF_NAME) or DEFAULT_NAME
+    async_add_entities(build_entities(device_name, entry.data[CONF_URL]))
+
+
+async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+    """Migrate a YAML configuration into a config entry.
+
+    Entities are no longer created from YAML: a config entry is required so that
+    the device can be attached to it. The entry is created by the import flow and
+    sets this platform up again.
+    """
+    if hass.config_entries.async_entries(DOMAIN):
+        _LOGGER.warning(
+            "The 'sensor: - platform: %s' configuration is no longer used; the "
+            "relay is now set up as a config entry. Remove it from "
+            "configuration.yaml",
+            DOMAIN,
+        )
+        return
+
+    hass.async_create_task(
+        hass.config_entries.flow.async_init(
+            DOMAIN,
+            context={"source": SOURCE_IMPORT},
+            data={
+                CONF_URL: config[CONF_URL],
+                CONF_NAME: config.get(CONF_NAME) or DEFAULT_NAME,
+            },
+        )
+    )

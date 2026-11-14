@@ -1,0 +1,20 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Logia Weather Underground relay",
+        "description": "URL of the JSON payload written by your relay.",
+        "data": {
+          "url": "Payload URL",
+          "name": "Device name"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot read the payload from this URL."
+    },
+    "abort": {
+      "already_configured": "This relay URL is already configured."
+    }
+  }
+}
