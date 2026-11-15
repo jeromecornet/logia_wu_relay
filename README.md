@@ -77,6 +77,9 @@ keep showing a stale value.
 - Set up as a config entry (UI or YAML import), so the weather station device is
   attached to an integration entry instead of floating free — required since
   Home Assistant deprecated device-less YAML platforms.
+- Sensors declare `state_class: measurement` explicitly. Home Assistant no longer
+  derives the state class from `device_class`, and an entity that loses it stops
+  long-term statistics and raises a `state_class_removed` repair.
 - All entities share a single HTTP request per poll cycle (5 s cache) instead of
   fetching the payload once per entity.
 - Network errors, truncated payloads and missing keys degrade to `unknown`

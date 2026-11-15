@@ -19,6 +19,7 @@ from homeassistant.components.sensor import (
     PLATFORM_SCHEMA,
     SensorDeviceClass,
     SensorEntity,
+    SensorStateClass,
 )
 from homeassistant.config_entries import SOURCE_IMPORT
 from homeassistant.const import UnitOfTemperature
@@ -212,6 +213,10 @@ class LogiaRelaySensor(LogiaSensorBase):
         self._attr_name = f"{device_name} {base} {sensor_info['attr_name']}"
         self._attr_device_class = sensor_info["sensor_type"]
         self._attr_native_unit_of_measurement = sensor_info["unit"]
+        # Declare it explicitly: Home Assistant no longer derives the state class
+        # from the device class, and without it long-term statistics stop and a
+        # "state_class_removed" repair is raised.
+        self._attr_state_class = SensorStateClass.MEASUREMENT
 
 
 class LogiaWindSensor(LogiaSensorBase):
@@ -232,6 +237,7 @@ class LogiaHumidexSensor(LogiaSensorBase):
         self._attr_name = f"{device_name} {base} Humidex"
         self._attr_device_class = SensorDeviceClass.TEMPERATURE
         self._attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
+        self._attr_state_class = SensorStateClass.MEASUREMENT
         self._attr_suggested_display_precision = 1
 
     def compute(self, payload):
@@ -250,6 +256,7 @@ class LogiaWindChillSensor(LogiaSensorBase):
         self._attr_name = f"{device_name} {base} Wind Chill"
         self._attr_device_class = SensorDeviceClass.TEMPERATURE
         self._attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
+        self._attr_state_class = SensorStateClass.MEASUREMENT
         self._attr_suggested_display_precision = 1
 
     def compute(self, payload):
@@ -270,6 +277,7 @@ class LogiaFeelsLikeSensor(LogiaSensorBase):
         self._attr_name = f"{device_name} {base} Feels Like"
         self._attr_device_class = SensorDeviceClass.TEMPERATURE
         self._attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
+        self._attr_state_class = SensorStateClass.MEASUREMENT
         self._attr_suggested_display_precision = 1
 
     def compute(self, payload):
